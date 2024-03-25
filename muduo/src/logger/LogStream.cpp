@@ -192,7 +192,7 @@ LogStream& LogStream::operator<<(const GeneralTemplate &t)
     return *this;
 }
 
-#if 0
+
 // 编译命令：g++ LogStream.cc -o testlogstream -I ../base
 #include <iostream>
 using namespace std;
@@ -205,4 +205,3 @@ int main()
     cout << buffer.data() << endl;
     return 0;
 }
-#endif

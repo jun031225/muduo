@@ -6,7 +6,7 @@
 class GeneralTemplate : noncopyable
 {
 public:
-    char *data_;
+     const char *data_;
     int len_;
 
     GeneralTemplate() : data_(nullptr), len_(0) {}
