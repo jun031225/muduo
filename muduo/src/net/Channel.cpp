@@ -3,6 +3,7 @@
 
 #include <sys/epoll.h>
 
+
 const int Channel::kNoneEvent = 0;
 const int Channel::kReadEvent = EPOLLIN | EPOLLPRI;
 const int Channel::kWriteEvent = EPOLLOUT;
@@ -47,7 +48,7 @@ void Channel::handleEvent(TimeStamp receiveTime)
     }
     else
     {
-        handleEventWithGuard(receviveTime);
+        handleEventWithGuard(receiveTime);
     }
 }
 
@@ -64,7 +65,7 @@ void Channel::handleEventWithGuard(TimeStamp receiveTime)
         if (errorCallback_) errorCallback();
     }
     //可读事件(普通数据，高优先数据，关闭连接请求)
-    if (rebents_ & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
+    if (revents_ & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
     {
         if (readCallback_) readCallabck();
     }

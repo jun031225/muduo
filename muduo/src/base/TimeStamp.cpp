@@ -41,8 +41,8 @@ std::string TimeStamp::toFormattedString(bool showMicroSecond) const
     return buf;
 }
 
-//调试
-/*
+
+
  int main()
  {
      TimeStamp time;
@@ -51,4 +51,3 @@ std::string TimeStamp::toFormattedString(bool showMicroSecond) const
 
      return 0; 
      }
-*/

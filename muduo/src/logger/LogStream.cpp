@@ -19,7 +19,7 @@ size_t convertHex(char buf[], uintptr_t value)
     {
         int lsd = static_cast<int>(i % 16);
         i /= 16;
-        *p++ = digistHex[lsd];
+        *p++ = digitsHex[lsd];
     }while(i != 0);
 
     *p = '\0';
@@ -171,14 +171,14 @@ LogStream& LogStream::operator<<(const unsigned char *str)
 }
 
 //string直接填入buffer_
-LogStream& LogStream::operatro<<(const std::string& str)
+LogStream& LogStream::operator<<(const std::string& str)
 {
     buffer_.append(str.c_str(), str.size());
     return *this;
 }
 
 //kSmallBUffer(FixedBufder)对象转换为string处理
-LogStream& Logstream::operator<<(const kSmallBuffer& buf)
+LogStream& LogStream::operator<<(const SmallBuffer& buf)
 {
     *this<<buf.toString();
     return *this;

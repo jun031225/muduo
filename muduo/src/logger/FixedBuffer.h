@@ -21,7 +21,7 @@ class FixedBuffer : noncopyable
     private:
     const char *end() const{return data_ + sizeof(data_);}//指向文件尾
     char data_[SIZE];
-    cahr *cur_;//记录当前data_中已经写到了什么位置
+    char *cur_;//记录当前data_中已经写到了什么位置
 
     public:
         FixedBuffer() : cur_(data_){}
@@ -52,7 +52,7 @@ class FixedBuffer : noncopyable
     /*|xxxxxxxxxxxxx|<---   avail() ---->|*/
     /*------------------------------------*/
     /*data_        cur_              end()*/
-}
+};
 
 
 
