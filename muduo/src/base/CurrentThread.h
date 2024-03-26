@@ -5,11 +5,11 @@
 
 namespace CurrentThread
 {
-    extern __thread int t_cacheTid;//保存tid缓冲，避免多次系统调用
+    extern __thread int t_cacheTid;//线程id缓冲，避免多次系统调用
 
-    void cacheTid();
+    void cacheTid();//系统调用线程id
 
-    inline int tid()
+    inline int tid()//获取当前线程id
     {
         if(__builtin_expect(t_cacheTid == 0, 0))
         {
