@@ -1,6 +1,7 @@
 #pragma once
 
 #include"noncopyable.h"
+
 #include<assert.h>
 #include<string.h>
 #include<strings.h>
