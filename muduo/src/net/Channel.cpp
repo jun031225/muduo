@@ -57,21 +57,21 @@ void Channel::handleEventWithGuard(TimeStamp receiveTime)
     // 对方关闭连接
     if ((revents_ & EPOLLHUP) && !(revents_ & EPOLLIN))
     {
-        if (closeCallback_) closeCallback();
+        if (closeCallback_) closeCallback_();
     }
     // 错误事件
     if (revents_ & EPOLLERR)
     {
-        if (errorCallback_) errorCallback();
+        if (errorCallback_) errorCallback_();
     }
     //可读事件(普通数据，高优先数据，关闭连接请求)
     if (revents_ & (EPOLLIN | EPOLLPRI | EPOLLRDHUP))
     {
-        if (readCallback_) readCallabck();
+        if (readCallback_) readCallback_(receiveTime);
     }
     //可写事件
     if(revents_ & EPOLLOUT)
     {
-        if(writeCallback_) writeCallback();
+        if(writeCallback_) writeCallback_();
     }
 }
