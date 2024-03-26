@@ -1,7 +1,7 @@
 #pragma once
 
 #include"TimeStamp.h"
-#include "logging.h"
+#include "Logging.h"
 #include "noncopyable.h"
 
 #include <memory>
