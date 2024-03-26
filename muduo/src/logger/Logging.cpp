@@ -1,7 +1,6 @@
 #include "Logging.h"
 #include "CurrentThread.h"
 
-class CurrentThread;
 // 封装三个线程局部存储（TLS）变量
 // 每个线程都有自己的 t_errnobuf，因此不会出现多个线程同时尝试写入或读取同一缓冲区的情况
 namespace ThreadInfo

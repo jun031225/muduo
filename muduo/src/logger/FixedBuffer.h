@@ -45,7 +45,7 @@ class FixedBuffer : noncopyable
         void update(size_t len){cur_ += len;}//更新当前位置
 
         void reset(){cur_ = data_;}
-        void bzero(){::bzero(data_, sizeof(data));}//清空
+        void bzero(){::bzero(data_, sizeof(data_));}//清空
 
         std::string toString() const{return std::string(data_, length());}//将写入数据转换为字符串
 
