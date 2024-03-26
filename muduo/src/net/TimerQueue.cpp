@@ -97,18 +97,18 @@ TimerQueue::~TimerQueue()
     // 删除定时器
     for (const Entry &timer : timers_)
     {
-        delete timer.second();
+        delete timer.second;
     }
 }
 
 //向定时器队列添加定时器
-void TimerQueue::addtimer(TimerCallback cb, TimeStamp when, double interval)
+void TimerQueue::addTimer(TimerCallback cb, TimeStamp when, double interval)
 {
     Timer *timer = new Timer(std::move(cb), when, interval);
     loop_->runInLoop(std::bind(&TimerQueue::addTimerInLoop, this, timer));
 }
 
-void addTimerInLoop(Timer *timer)
+void TimerQueue::addTimerInLoop(Timer *timer)
 {
     // 将timer添加到TimerList时，判断其超时时刻是否是最早的
     bool eralistChanged = TimerQueue::insert(timer);
@@ -120,27 +120,9 @@ void addTimerInLoop(Timer *timer)
     }
 }
 
-// 处理超时的定时器
-void TimerQueue::handleRead()
-{
-    TimeStamp now = TimeStamp::now();
-    readTimerfd(timerfd_);
-
-    // 获取超时的定时器并逐个调用回调函数
-    std::vector<Entry> expiredTimers = getExpiredTimers(now);
-    callingExpriedTimers_ = true;
-    for (const Entry &it : expiredTimer)
-    {
-        it.second->run();
-    }
-    callingExpriedTimers_ = false;
-    // 重置超时的定时器
-    resetExpired(expiredTimers, now);
-}
-
 
 //重置超时的定时器(插入可重复->重置、删除不可重复)
-void TimerQueue::resetExpired(const std::vector<Entry> &expiredTimers TimeStamp now)
+void TimerQueue::resetExpired(const std::vector<Entry> &expiredTimers, TimeStamp now)
 {
     TimeStamp nextExpire; // 记录timerfd下一次超时时刻
     for (const Entry &it : expiredTimers)
@@ -148,7 +130,7 @@ void TimerQueue::resetExpired(const std::vector<Entry> &expiredTimers TimeStamp 
         if (it.second->repeat()) // 定时器可重复,插入定时器队列
         {
             auto timer = it.second;
-            timer->restart(TimeSatmp::now()); // 设置下一次超时时刻
+            timer->restart(TimeStamp::now()); // 设置下一次超时时刻
             TimerQueue::insert(timer);
         }
         else
@@ -167,6 +149,27 @@ void TimerQueue::resetExpired(const std::vector<Entry> &expiredTimers TimeStamp 
     }
 }
 
+// 处理超时的定时器
+void TimerQueue::handleRead()
+{
+    TimeStamp now = TimeStamp::now();
+    readTimerfd(timerfd_);
+
+    // 获取超时的定时器并逐个调用回调函数
+    std::vector<Entry> expiredTimers = getExpiredTimers(now);
+    callingExpriedTimers_ = true;
+    for (const Entry &it : expiredTimers)
+    {
+        it.second->run();
+    }
+    callingExpriedTimers_ = false;
+    // 重置超时的定时器
+    resetExpired(expiredTimers, now);
+}
+
+
+
+
 // 插入新的定时器并返回是否是最早到期定时器
 bool TimerQueue::insert(Timer *timer)
 {
@@ -174,7 +177,7 @@ bool TimerQueue::insert(Timer *timer)
     TimeStamp when = timer->expiration();
     TimerList::iterator it = timers_.begin();
 
-    if (it == timers_.end() || when < it.first()) // 定时器队列为空/小于最早到期的定时器
+    if (it == timers_.end() || when < it->first) // 定时器队列为空/小于最早到期的定时器
     {
         eralistChanged = true;
     }
@@ -197,7 +200,7 @@ std::vector<TimerQueue::Entry> TimerQueue::getExpiredTimers(TimeStamp now)
     TimerList::iterator end = timers_.lower_bound(sentry);
 
     // 把TimerList中所有超时的元素都拷贝到expiredTimer中
-    std::copy(timers_.begin(), end, back_insert(expiredTimer));
+    std::copy(timers_.begin(), end, back_inserter(expiredTimers));
     
     timers_.erase(timers_.begin(), end);  // 移除超时定时器
 

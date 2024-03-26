@@ -90,7 +90,7 @@ private:
     int revents_;     // 实际发生的事件
     int index_;       // 在epoller注册的状态(kNew,kAdded,kDeleted-未监视，被监视，已移除)
 
-    std::weak_ptr<void> tis_; // 弱指针指向TcpConnection(必要时升级为shared_ptr多一份引用计数，避免用户误删)
+    std::weak_ptr<void> tie_; // 弱指针指向TcpConnection(必要时升级为shared_ptr多一份引用计数，避免用户误删)
     bool tied_;               // 标志此 Channel 是否被调用过 Channel::tie 方法
     // 保存事件发生时的回调函数
     ReadEventCallback readCallback_;

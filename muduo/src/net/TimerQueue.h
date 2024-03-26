@@ -18,7 +18,7 @@ public:
     ~TimerQueue();
 
     // 通过调用insert向TimerList中插入定时器（回调函数，到期时间，时间间隔）
-    void addtimer(TimerCallback cb, TimeStamp when, double interval);
+    void addTimer(TimerCallback cb, TimeStamp when, double interval);
 
 private:
     using Entry = std::pair<TimeStamp, Timer *>;
@@ -36,6 +36,6 @@ private:
     void addTimerInLoop(Timer *timer);                            // 在当前事件循环(Eventloop)添加定时器
     void handleRead();                                            // 定时器读时间回调函数
     std::vector<Entry> getExpiredTimers(TimeStamp now);           // 获取到期的定时器
-    void reset(const std::vector<Entry> &expired, TimeStamp now); // 重置到期(超时)的定时器(销毁或重启定时任务)
+    void resetExpired(const std::vector<Entry> &expired, TimeStamp now); // 重置到期(超时)的定时器(销毁或重启定时任务)
     bool insert(Timer *timer);                                    // 插入定时器
 };
