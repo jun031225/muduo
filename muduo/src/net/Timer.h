@@ -16,12 +16,10 @@ public:
     using TimerCallback = std::function<void()>; // 超时回调函数
 
     Timer(TimerCallback cb, TimeStamp when, double interval)
-       :callback_(std::move(cb)),
-        expiration_(when),
-        interval_(interval),
-        repeat_(interval_ > 0.0)
-    {
-    }
+        : callback_(std::move(cb)),
+          expiration_(when),
+          interval_(interval),
+          repeat_(interval_ > 0.0) {}
 
     void run() const { callback_(); }                    // 超时回调函数
     TimeStamp expiration() const { return expiration_; } // 返回初始超时时间

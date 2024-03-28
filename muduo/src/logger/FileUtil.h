@@ -22,5 +22,5 @@ private:
 
     FILE *fp_;
     char buffer_[64*1024];//文件缓冲区大小
-    off_t wrtittenBytes_;
+    off_t wrtittenBytes_;//已写入字节
 };

@@ -7,9 +7,9 @@
 #include <unistd.h>
 #include <string.h>
 
-//timerfd_create创建timerfd-->epoll注册timerfd-->timerfd_settime启动定时器
+// timerfd_create创建timerfd-->epoll注册timerfd-->timerfd_settime启动定时器
 //-->timerfd可读-->TimerQueue::handleRead-->
-//一个timerfd实现多个定时器(让timerfd的超时时刻总是设置为TimerQueue中最小的Timer的超时时刻)
+// 一个timerfd实现多个定时器(让timerfd的超时时刻总是设置为TimerQueue中最小的Timer的超时时刻)
 
 // 创建timerfd
 int createTimerfd()
@@ -26,8 +26,8 @@ int createTimerfd()
     return timerfd;
 }
 
-//开启或停止定时器
-// 重置timerfd的超时时间，重置后，如果超时时间不为0，则内核会启动定时器，否则内核会停止定时器
+// 开启或停止定时器
+//  重置timerfd的超时时间，重置后，如果超时时间不为0，则内核会启动定时器，否则内核会停止定时器
 void resetTimerfd(int timerfd, TimeStamp expiration)
 {
     /*
@@ -41,7 +41,7 @@ void resetTimerfd(int timerfd, TimeStamp expiration)
        struct timespec it_value;     // 初始过期时间
    };
    */
-    //初始化为空
+    // 初始化为空
     struct itimerspec newValue;
     struct itimerspec oldValue;
     memset(&newValue, '\0', sizeof(newValue));
@@ -55,12 +55,12 @@ void resetTimerfd(int timerfd, TimeStamp expiration)
     }
 
     struct timespec ts;
-    ts.tv_sec = static_cast<time_t>(interval / TimeStamp::microSecondPerSecond); // 秒
-    ts.tv_nsec = static_cast<long>((interval % TimeStamp::microSecondPerSecond) * 1000);//微秒
+    ts.tv_sec = static_cast<time_t>(interval / TimeStamp::microSecondPerSecond);         // 秒
+    ts.tv_nsec = static_cast<long>((interval % TimeStamp::microSecondPerSecond) * 1000); // 微秒
     newValue.it_value = ts;
 
-    //int timerfd_settime(int fd, int flags, const struct itimerspec *new_value, struct itimerspec *old_value);
-    // 调用timerfd_settime启动定时器,唤醒事件循环
+    // int timerfd_settime(int fd, int flags, const struct itimerspec *new_value, struct itimerspec *old_value);
+    //  调用timerfd_settime启动定时器,唤醒事件循环
     if (::timerfd_settime(timerfd, 0, &newValue, &oldValue))
     {
         LOG_ERROR << "timerfd_settime failed!";
@@ -80,7 +80,7 @@ void readTimerfd(int timerfd)
 TimerQueue::TimerQueue(EventLoop *loop)
     : loop_(loop),
       timerfd_(createTimerfd()),
-      timerfdChannel_(loop_, timerfd_),//绑定Chnnel(fd)与EventLoop
+      timerfdChannel_(loop_, timerfd_), // 绑定Chnnel(fd)与EventLoop
       timers_()
 {
     // 为timerfd的可读事件设置回调函数并向epoll中注册timerfd的可读事件
@@ -101,7 +101,7 @@ TimerQueue::~TimerQueue()
     }
 }
 
-//向定时器队列添加定时器
+// 向定时器队列添加定时器
 void TimerQueue::addTimer(TimerCallback cb, TimeStamp when, double interval)
 {
     Timer *timer = new Timer(std::move(cb), when, interval);
@@ -120,8 +120,7 @@ void TimerQueue::addTimerInLoop(Timer *timer)
     }
 }
 
-
-//重置超时的定时器(插入可重复->重置、删除不可重复)
+// 重置超时的定时器(插入可重复->重置、删除不可重复)
 void TimerQueue::resetExpired(const std::vector<Entry> &expiredTimers, TimeStamp now)
 {
     TimeStamp nextExpire; // 记录timerfd下一次超时时刻
@@ -167,9 +166,6 @@ void TimerQueue::handleRead()
     resetExpired(expiredTimers, now);
 }
 
-
-
-
 // 插入新的定时器并返回是否是最早到期定时器
 bool TimerQueue::insert(Timer *timer)
 {
@@ -186,10 +182,9 @@ bool TimerQueue::insert(Timer *timer)
     return eralistChanged;
 }
 
-
-    // 移除所有已到期的定时器
-    // 1.获取到期的定时器
-    // 2.重置这些定时器（销毁或者重复定时任务）
+// 移除所有已到期的定时器
+// 1.获取到期的定时器
+// 2.重置这些定时器（销毁或者重复定时任务）
 std::vector<TimerQueue::Entry> TimerQueue::getExpiredTimers(TimeStamp now)
 {
     std::vector<Entry> expiredTimers;
@@ -201,9 +196,8 @@ std::vector<TimerQueue::Entry> TimerQueue::getExpiredTimers(TimeStamp now)
 
     // 把TimerList中所有超时的元素都拷贝到expiredTimer中
     std::copy(timers_.begin(), end, back_inserter(expiredTimers));
-    
-    timers_.erase(timers_.begin(), end);  // 移除超时定时器
+
+    timers_.erase(timers_.begin(), end); // 移除超时定时器
 
     return expiredTimers;
 }
-
