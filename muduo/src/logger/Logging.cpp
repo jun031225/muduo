@@ -10,45 +10,6 @@ namespace ThreadInfo
     __thread time_t t_lastSecond;  // 存储上次记录时间(秒)
 };
 
-const char *getErrnoMsg(int savedErrno)
-{
-    // 线程安全地获取指向错误消息的指针
-    return strerror_r(savedErrno, ThreadInfo::t_errnobuf, sizeof(ThreadInfo::t_errnobuf));
-}
-
-// 根据Level返回Level名字
-const char *getLevelName[Logger::LogLevel::LEVEL_COUNT]{
-    "TRACE", // 0
-    "DEBUG", // 1
-    "INFO",  // 2
-    "WARN",  // 3
-    "ERROR", // 4
-    "FATAL", // 5
-};
-
-// 初始日志等级为INFO
-Logger::LogLevel initLogLevel()
-{
-    return Logger::INFO;
-}
-
-Logger::LogLevel g_logLevel = initLogLevel();
-
-// 默认写入标准输出
-static void defaultOutput(const char *data, int len)
-{
-    fwrite(data, 1, static_cast<size_t>(len), stdout);
-}
-
-// 默认刷新标准输出缓冲区
-static void defaultFlush()
-{
-    fflush(stdout);
-}
-
-// 设置默认写入和刷新函数
-Logger::outputFunc g_output = defaultOutput;
-Logger::flushFunc g_flush = defaultFlush;
 
 Logger::Impl::Impl(Logger::LogLevel level, int savedErrno, const char *file, int line)
     : time_(TimeStamp::now()),
@@ -130,8 +91,47 @@ void Logger::Impl::finish()
     stream_ << " - " << GeneralTemplate(basename_.data_, basename_.size_) << ':' << line_ << '\n';
 }
 
-//下面函数修改默认日志等级，输出位置，刷新
+const char *getErrnoMsg(int savedErrno)
+{
+    // 线程安全地获取指向错误消息的指针
+    return strerror_r(savedErrno, ThreadInfo::t_errnobuf, sizeof(ThreadInfo::t_errnobuf));
+}
 
+// 根据Level返回Level名字
+const char *getLevelName[Logger::LogLevel::LEVEL_COUNT]{
+    "TRACE", // 0
+    "DEBUG", // 1
+    "INFO",  // 2
+    "WARN",  // 3
+    "ERROR", // 4
+    "FATAL", // 5
+};
+
+// 初始日志等级为INFO
+Logger::LogLevel initLogLevel()
+{
+    return Logger::INFO;
+}
+
+Logger::LogLevel g_logLevel = initLogLevel();
+
+// 默认写入标准输出
+static void defaultOutput(const char *data, int len)
+{
+    fwrite(data, 1, static_cast<size_t>(len), stdout);
+}
+
+// 默认刷新标准输出缓冲区
+static void defaultFlush()
+{
+    fflush(stdout);
+}
+
+// 设置默认写入和刷新函数
+Logger::outputFunc g_output = defaultOutput;
+Logger::flushFunc g_flush = defaultFlush;
+
+//下面函数修改默认日志等级，输出位置，刷新
 void Logger::setLogLevel(Logger::LogLevel level)
 {
     g_logLevel = level;
