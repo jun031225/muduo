@@ -52,5 +52,5 @@ private:
 
     BufferPtr currentBuffer_;  //前端当前写入的缓冲区Buffer(4Mb)
     BufferPtr nextBuffer_;//用于与currentBuffer_交换的备用Buffer(4MB)
-    BufferVector buffers_;//后端缓冲队列
+    BufferVector buffers_;//缓冲队列
 };

@@ -10,7 +10,7 @@ public:
     explicit FileUtil(std::string &fileName);
     ~FileUtil();
 
-    void append(const char *data, size_t len);//将数据写入文件缓冲区buffer_(64KB)
+    void append(const char *data, size_t len);//将数据写入文件内核缓冲区buffer_(64KB)
     void flush();//刷新文件缓冲区buffer_(64KB)
 
     // 返回已经写入了多少字节，以便LogFile根据写入数据量来判断是否需要滚动日志
