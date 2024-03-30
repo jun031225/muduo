@@ -29,14 +29,16 @@ void Thread::start()
     started_ = true;
     sem_t sem;
     sem_init(&sem, false, 0);
+
     //创建新线程
     thread_ = std::shared_ptr<std::thread>(new std::thread([&](){
         tid_ = CurrentThread::tid();//获取线程id
-        sem_post(&sem);//新线程调用，信号量加1
+        sem_post(&sem);//信号量加1，用于唤醒其他线程
         func_();
     }));
+
     //其他线程需要等待直到新创建线程获取到tid后，避免没有获取tid其他线程就访问其tid
-    sem_wait(&sem);//其他线程等待，减少信号量
+    sem_wait(&sem);//减少信号量(0)，线程进入等待
 }
 
 void Thread::join()

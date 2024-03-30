@@ -177,7 +177,7 @@ LogStream& LogStream::operator<<(const std::string& str)
     return *this;
 }
 
-//kSmallBUffer(FixedBufder)对象转换为string处理
+//kSmallBUffer(FixedBuffer)对象转换为string处理
 LogStream& LogStream::operator<<(const SmallBuffer& buf)
 {
     *this<<buf.toString();

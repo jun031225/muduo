@@ -10,26 +10,6 @@ namespace ThreadInfo
     __thread time_t t_lastSecond;  // 存储上次记录时间(秒)
 };
 
-
-Logger::Impl::Impl(Logger::LogLevel level, int savedErrno, const char *file, int line)
-    : time_(TimeStamp::now()),
-      stream_(),
-      level_(level),
-      line_(line),
-      basename_(file)
-{
-    formatTime();                                       // 将时间写入流
-    //CurrentThread::tid();
-    //stream_ << GeneralTemplate(CurrentThread::tidString(), static_cast<unsigned int>(CurrentThread::tidStringLength()));
-    stream_ << GeneralTemplate(getLevelName[level], 6); // 将日志等级写入流
-
-    // 将错误信息写入流
-    if (savedErrno != 0)
-    {
-        stream_ << getErrnoMsg(savedErrno) << "(errno = " << savedErrno << ")";
-    }
-}
-
 Logger::Logger(const char *file, int line) : impl_(INFO, 0, file, line) {}
 Logger::Logger(const char *file, int line, Logger::LogLevel level) : impl_(level, 0, file, line) {}
 Logger::Logger(const char *file, int line, Logger::LogLevel level, const char *func) : impl_(level, 0, file, line)
@@ -37,14 +17,36 @@ Logger::Logger(const char *file, int line, Logger::LogLevel level, const char *f
     impl_.stream_ << func << ' ';
 }
 
+//将时间，错误信息，日志等级写入buffer_(4KB)
+Logger::Impl::Impl(Logger::LogLevel level, int savedErrno, const char *file, int line)
+    : time_(TimeStamp::now()),
+      stream_(),
+      level_(level),
+      line_(line),
+      basename_(file)
+{
+    formatTime();     //将时间写入buffer_(4KB)
+    //CurrentThread::tid();
+    //stream_ << GeneralTemplate(CurrentThread::tidString(), static_cast<unsigned int>(CurrentThread::tidStringLength()));
+
+    stream_ << GeneralTemplate(getLevelName[level], 6); // 将日志等级写入buffer_(4KB)
+
+    // 将错误信息写入buffer_(4KB)
+    if (savedErrno != 0)
+    {
+        stream_ << getErrnoMsg(savedErrno) << "(errno = " << savedErrno << ")";
+    }
+}
+
+//将buffer_(4KB)写入输出(标准输出)
 Logger::~Logger()
 {
     impl_.finish();
 
-    // 获取buffer_
+    // 获取buffer_(4KB)
     const LogStream::SmallBuffer &buf(stream().buffer());
 
-    // 写入标准输出
+    // 将buffer_(4KB)写入输出(标准输出)
     g_output(buf.data(), buf.length());
 
     // FATAL等级终止程序
@@ -55,7 +57,7 @@ Logger::~Logger()
     }
 }
 
-// Timestamp::toFmattedString方法的思路，只不过这里需要输出到流
+// Timestamp::toFmattedString方法的思路，将时间写入buffer_(4KB)
 void Logger::Impl::formatTime()
 {
     // 当前时间转换为秒.微秒的形式
@@ -81,11 +83,11 @@ void Logger::Impl::formatTime()
     char buf[32] = {0};
     snprintf(buf, sizeof(buf), "%06d", microSeconds);
 
-    // 写入时间到输出流
+    // 写入时间到buffer_(4KB)
     stream_ << GeneralTemplate(ThreadInfo::t_time, 17) << GeneralTemplate(buf, 7);
 }
 
-// Log结尾(文件名，行号)
+// Log结尾(文件名，行号)写入buffer_(4KB)
 void Logger::Impl::finish()
 {
     stream_ << " - " << GeneralTemplate(basename_.data_, basename_.size_) << ':' << line_ << '\n';
@@ -97,7 +99,7 @@ const char *getErrnoMsg(int savedErrno)
     return strerror_r(savedErrno, ThreadInfo::t_errnobuf, sizeof(ThreadInfo::t_errnobuf));
 }
 
-// 根据Level返回Level名字
+// 字符串数组，据Level返回Level名字
 const char *getLevelName[Logger::LogLevel::LEVEL_COUNT]{
     "TRACE", // 0
     "DEBUG", // 1
@@ -127,11 +129,11 @@ static void defaultFlush()
     fflush(stdout);
 }
 
-// 设置默认写入和刷新函数
+// 设置buffer_默认写入和刷新位置(标准输出)
 Logger::outputFunc g_output = defaultOutput;
 Logger::flushFunc g_flush = defaultFlush;
 
-//下面函数修改默认日志等级，输出位置，刷新
+//下面函数修改默认日志等级，数据输出位置，刷新位置
 void Logger::setLogLevel(Logger::LogLevel level)
 {
     g_logLevel = level;

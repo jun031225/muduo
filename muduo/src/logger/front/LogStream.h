@@ -2,7 +2,7 @@
 
 #include "FixedBuffer.h"
 
-// 输出通用模版，用于LogStream<<时间，sourceFIle等
+// 输出通用模版，用于将时间，文件名写入buffer(4KB)
 class GeneralTemplate : noncopyable
 {
 public:
@@ -13,7 +13,8 @@ public:
     explicit GeneralTemplate(const char *data, int len) : data_(data), len_(len) {}
 };
 
-// LogStream： 实现类似cout的效果，便于输出日志信息，即：LogStream << A << B << ...,重载“<<”
+
+// LogStream：重载<<运算符,将数据写入buffer(4KB)
 class LogStream : noncopyable
 {
 public:

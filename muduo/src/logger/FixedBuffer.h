@@ -8,9 +8,8 @@
 #include<string>
 
 
-//自定义的Buffer工具类，可以申请制定大小的空间的内存区域，并实现了一些接口方便
-//从buffer中写入数据或者取出数据。异步日志就需要前端先将日志信息写入Buffer，
-//然后后端从buffer中取出数据写入stdout或者文件，
+//自定义的Buffer工具类，申请制定大小的空间的内存区域(4KB,4MB)
+//实现了一些接口方便从buffer中写入数据或者取出数据。
 
 //Buffer默认大小
 const int kSmallBuffer = 4096;//前端

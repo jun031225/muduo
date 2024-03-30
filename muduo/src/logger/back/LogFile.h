@@ -5,6 +5,8 @@
 #include <mutex>
 #include <memory>
 
+//为数据写入文件提供缓冲区(64KB)，供AsyncLogging调用
+
 class LogFile
 {
 public:
@@ -12,15 +14,15 @@ public:
     ~LogFile() = default;
 
     void append(const char *logline, int len);
-    void flush();    // 刷新文件缓冲区
+    void flush();    // 刷新文件缓冲区buffer_(64KB)
     bool rollFile(); // 滚动日志，相当于创建一个新的文件，用来存储日志
 private:
-    //根据当前时间生成一个文件名并返回
+    //根据当前时间生成一个文件名并返回   basename.20240311-112330.log
     static std::string getLogFileName(const std::string &basename, time_t *now);
     void append_unlocked(const char *logline, int len);
 
     const std::string basename_;
-    const off_t rollSize_; // 是否滚动日志的阈值，file_的缓冲区buffer_中的数据超过该值就会滚动日志
+    const off_t rollSize_; // 是否滚动日志的阈值，file_的缓冲区buffer_(64KB)中的数据超过该值就会滚动日志
     const int flushInterval_;//刷新时间间隔
     const int checkEveryN_;//写入文件缓冲区次数的阈值，超过则写入文件
 

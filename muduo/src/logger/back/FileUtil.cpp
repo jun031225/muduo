@@ -5,18 +5,17 @@ FileUtil::FileUtil(std::string &fileName) :
 //追加模式打开一个文件，并以二进制形式进行读写,
 //即文件指针会被设置到文件的末尾，这样写入操作会从文件的末尾开始。
 //如果文件不存在，则会尝试创建文件
-fp_(::fopen(fileName.c_str(), "ae")),
-                                            wrtittenBytes_(0)
+fp_(::fopen(fileName.c_str(), "ae")), wrtittenBytes_(0)
 {
-    ::setbuffer(fp_, buffer_, sizeof(buffer_)); // 将文件缓冲区设为自定义buffer_
+    ::setbuffer(fp_, buffer_, sizeof(buffer_)); // 将文件缓冲区设为自定义buffer_(64KB)
 }
 
 FileUtil::~FileUtil()
 {
-    ::fclose(fp_);
+    ::fclose(fp_);//关闭文件
 }
 
-// 写入文件(缓冲区)
+// 写入文件缓冲区buffer_(64KB)
 void FileUtil::append(const char *data, size_t len)
 {
     size_t written = 0;    // 记录已经写入的数据大小
@@ -43,7 +42,7 @@ void FileUtil::flush()
     ::fflush(fp_);
 }
 
-// 写入文件(缓冲区)
+// 数据写入文件缓冲区buffer_(64KB)
 size_t FileUtil::write(const char *data, size_t len)
 {
     // fwrite_unlocked() 是一个线程不安全的版本，它不会自动获取文件锁，因此可能更快，但也更危险。

@@ -15,9 +15,9 @@ LogFile::LogFile(const std::string &basename, off_t rollSize, bool threadSafe, i
 }
 
 // 滚动日志(新建文件)
-//会发生混动日志的情况：
+//会发生滚动日志的情况：
 // 1）日志大小超过了设定的阈值rollSize_
-// 2）写入缓冲区次数超过限制，过了0点(调用append时候)
+// 2）写入文件缓冲区次数超过限制，过了0点(调用append时候)
 bool LogFile::rollFile()
 {
     time_t now = 0;
@@ -67,9 +67,10 @@ void LogFile::append(const char *logline, int len)
     }
 }
 
+//将数据写入文件缓冲区(64KB),并在适当的时候滚动日志或刷新文件缓冲区
 void LogFile::append_unlocked(const char *logline, int len)
 {
-    file_->append(logline, len);//写入文件缓冲区
+    file_->append(logline, len);//写入文件缓冲区(64KB)
 
     //文件缓冲区数据超过滚动日志数据阈值
     if(file_->wrtittenBytes() > rollSize_)
@@ -100,11 +101,12 @@ void LogFile::append_unlocked(const char *logline, int len)
     }
 }
 
+//刷新文件缓冲区buffer_(64KB),将数据立即写入文件
 void LogFile::flush()
 {
     if(mutex_)
     {
-        std::lock_guard<std::mutex> lock(*mutex_);//
+        std::lock_guard<std::mutex> lock(*mutex_);
         file_->flush();
     }
     else

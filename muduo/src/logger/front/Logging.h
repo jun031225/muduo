@@ -9,6 +9,8 @@
 #include <string.h>
 #include <functional>
 
+//主要通过LogStream实现将log消息(时间,级别,正文,源文件名,行号)写入到buffer_(4KB),
+
 // 提取文件名
 class SourceFile
 {
@@ -61,8 +63,8 @@ public:
 
 private:
     // 负责Logger主要实现，提供组装一条完整log消息的功能。
-    // 日期      时间     微秒     线程  级别  正文     源文件名:       行号
-    // 20220306 09:15:44.681220Z  4013 WARN  Hello - Logging_test.cpp:75
+    //    日期   时 分 秒  微秒    级别   正文  - 源文件名:行号
+    // 20220306 09:15:44.681220Z  WARN  Hello - test.cpp:75
     class Impl
     {
     public:
