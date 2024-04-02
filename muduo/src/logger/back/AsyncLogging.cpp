@@ -21,6 +21,14 @@ buffers_()
     buffers_.reserve(16);
 }
 
+AsyncLogging::~AsyncLogging()
+    {
+        if (running_)
+        {
+            stop();
+        }
+    }
+
 //前端将完整的4KB的日志填入currentBuffer(4MB)
 void::AsyncLogging::append(const char *logline, int len)
 {

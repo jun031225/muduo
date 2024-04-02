@@ -45,7 +45,7 @@ public:
 
     // 设置回调函数
     void setReadCallback(ReadEventCallback cb) { readCallback_ = std::move(cb); }
-    void serWriteCallback(EventCallback cb) { writeCallback_ = std::move(cb); }
+    void setWriteCallback(EventCallback cb) { writeCallback_ = std::move(cb); }
     void setCloseCallback(EventCallback cb) { closeCallback_ = std::move(cb); }
     void setErrorCallback(EventCallback cb) { errorCallback_ = std::move(cb); }
 
