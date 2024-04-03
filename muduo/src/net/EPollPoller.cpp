@@ -74,7 +74,8 @@ void EPollPoller::fillActiveChannels(int numEvents, EPollPoller::ChannelList *ac
     }
 }
 
-//将channel添加到epollpoller(epoll_ctl)并设置channel的状态
+//根据channel在epoller的状态来更新channel的状态
+//未添加/已移除-->添加进epoller,  已添加-->fd无感兴趣事件则移除，有则更新感兴趣事件
 void EPollPoller::updateChannel(Channel *channel)
 {
     //只添加未添加和已移除状态的channel
@@ -95,15 +96,15 @@ void EPollPoller::updateChannel(Channel *channel)
         channel->set_index(kAdded);
         EPollPoller::update(EPOLL_CTL_ADD, channel);
     }
-    else//channel已注册到epollpoller
+    else//channel已注册到epollpoller(kAdded)
     {
-        //无感兴趣的事件
+        //无感兴趣的事件，则从epoller移除
         if(channel->isNoneEvent())
         {
             update(EPOLL_CTL_DEL, channel);
             channel->set_index(kDeleted);
         }
-        //事件被修改
+        //事件被修改，则修fd感兴趣的事件
         else
         {
             update(EPOLL_CTL_MOD,channel);
@@ -111,6 +112,20 @@ void EPollPoller::updateChannel(Channel *channel)
     }
 }
 
+//当连接销毁时，从epoll中移除并改变channel的状态，
+void EPollPoller::removeChannel(Channel* channel)
+{
+    //从map中移除
+    int fd = channel->fd();
+    channels_.erase(fd);
+
+    int index = channel->index();
+    if(index == kAdded)
+    {
+        update(EPOLL_CTL_DEL, channel);
+    }
+    channel->set_index(kNew);
+}
 
 void EPollPoller::update(int operation, Channel* channel)
 {
@@ -134,20 +149,7 @@ void EPollPoller::update(int operation, Channel* channel)
     }
 }
 
-//当连接销毁时，从epoll中移除并改变channel的状态，
-void EPollPoller::removeChannel(Channel* channel)
-{
-    //从map中移除
-    int fd = channel->fd();
-    channels_.erase(fd);
 
-    int index = channel->index();
-    if(index == kAdded)
-    {
-        update(EPOLL_CTL_DEL, channel);
-    }
-    channel->set_index(kNew);
-}
 
 //判断channel是否被注册到epoll中
 bool EPollPoller::hasChannel(Channel *channel) const

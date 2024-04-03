@@ -36,7 +36,7 @@ public:
     //写入数据到fd(可读空间-)
     ssize_t writeFd(int fd, int *saveErrno);
 
-     // 从可读空间取出可读数据(string)
+     // 从可读空间将数据转为字符串取出
     std::string retrieveAllAsString() { return retrieveAsString(readableBytes()); }
     std::string retrieveAsString(size_t len)
     {

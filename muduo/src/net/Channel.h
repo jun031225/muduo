@@ -25,7 +25,7 @@ public:
     int events() const { return events_; }
     int revents() const { return revents_; }
 
-    EventLoop *ownerLoop() { return loop_; }    // 返回Channel所属的EventLoop
+    EventLoop *ownerLoop() { return loop_; }    //      返回Channel所属的EventLoop
     void set_revents(int re) { revents_ = re; } // 设置poller返回的实际发生的事件
 
     // 返回fd当前的事件状态(是否注册可读，可写事件，空事件)
@@ -53,7 +53,7 @@ public:
 
     // 将TcpConnection的共享指针和Channel的成员弱指针绑定tie_，便于在Channel在处理事件时，
     // 防止TcpConnection已经被析构了（即连接已经关闭了）
-    void tie(const std::shared_ptr<void> &);
+    void tie(const std::shared_ptr<void> &obj);
 
     // 将fd与event注册到事件监听器或从中移除，本质调用epoll_ctl
     void addReading()
