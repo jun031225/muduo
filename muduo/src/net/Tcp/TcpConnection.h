@@ -11,6 +11,8 @@
 class Channel;
 class EventLoop;
 class Socket;
+
+//封装了一个 TCP 连接的所有操作和事件处理，包括发送数据、关闭连接、处理连接事件、设置回调函数等。
 //通过使用 shared_from_this()，您可以避免创建新的共享指针，并确保维护现有的共享所有权。
 class TcpConnection : noncopyable, public std::enable_shared_from_this<TcpConnection>
 {

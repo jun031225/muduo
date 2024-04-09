@@ -62,5 +62,5 @@ private:
     std::unique_ptr<Channel> wakeupChannel_; // wakeupFd_对应的channel
     ChannelList activeChannels_;             // 发生事件的Channel集合
     std::mutex mutex_;                       // 用于保护pendingFunctors_线程安全操作(添加或取出)
-    std::vector<Functor> pendingFunctors_;   // 存储loop跨线程需要执行的所有回调操作
+    std::vector<Functor> pendingFunctors_;   // 待执行回调函数队列
 };

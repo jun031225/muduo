@@ -66,8 +66,9 @@ void EventLoop::loop()
     while (!quit_)
     {
         activeChannels_.clear();
+        //循环获取就绪的事件
         epollReturnTime_ = epoller_->poll(kPollTimeMs, &activeChannels_);
-        // 循环等待事件发生
+        //事件发生处理
         for (Channel *channel : activeChannels_)
         {
             channel->handleEvent(epollReturnTime_);
@@ -115,7 +116,7 @@ void EventLoop::runInLoop(Functor cb)
 // 把cb放入队列中 唤醒loop所在的线程执行cb
 void EventLoop::queueInLoop(Functor cb)
 {
-    std::unique_lock<std::mutex> lock(mutex_);
+    std::unique_lock<std::mutex> lock(mutex_);//获取锁，析构时自动释放
     pendingFunctors_.emplace_back(cb);
 
     if (!isInLoopThread() || callingPendingFunctors_)
@@ -183,7 +184,7 @@ void EventLoop::doPendingFunctors()
     }
     for (const Functor &functor : functors)
     {
-        functor();
+        functor();//执行待执行回调函数
     }
     callingPendingFunctors_ = false;
 }

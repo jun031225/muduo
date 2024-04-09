@@ -4,6 +4,8 @@
 #include<string.h>
 #include<sys/time.h>
 
+//用于在 C++ 程序中操作时间戳，提供了方便的接口来获取当前时间、将时间戳转换为字符串以及进行时间戳的比较等操作
+
 class TimeStamp
 {
 public:
