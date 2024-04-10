@@ -133,7 +133,7 @@ void Logger::Impl::formatTime()
 
     // 写入微妙
     char buf[32] = {0};
-    snprintf(buf, sizeof(buf), "%06d", microSeconds);
+    snprintf(buf, sizeof(buf), "%06d ", microSeconds);
 
     // 写入时间到buffer_(4KB)
     stream_ << GeneralTemplate(ThreadInfo::t_time, 17) << GeneralTemplate(buf, 7);

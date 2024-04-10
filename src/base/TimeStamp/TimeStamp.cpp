@@ -46,9 +46,10 @@ std::string TimeStamp::toFormattedString(bool showMicroSecond) const
  int main()
  {
      TimeStamp time;
-     std::cout << time.now().toFormattedString() << std::endl;
-     std::cout << time.now().toFormattedString(true) << std::endl;
+     std::cout << time.now().toFormattedString() << "haha"<<std::endl;
+     std::cout << time.now().toFormattedString(true) << "heheh"<<std::endl;
 
      return 0; 
      }
-*/
+     */
+

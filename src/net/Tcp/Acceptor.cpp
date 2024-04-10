@@ -26,7 +26,7 @@ Acceptor::Acceptor(EventLoop *loop, const InetAddress &listenAddr, bool reusepor
       listenning_(false),
       idlefd_(::open("/dev/null", O_RDONLY | O_CLOEXEC))
 {
-    LOG_DEBUG << "Acceptor create nonblocking socket, [fd =" << acceptChannel_.fd() << "]";
+    LOG_DEBUG << "Acceptor create nonblocking socket, [fd = " << acceptChannel_.fd() << "]";
     acceptSocket_.setReuseAddr(reuseport);
     acceptSocket_.setReusePort(true);
     acceptSocket_.bindAddress(listenAddr);

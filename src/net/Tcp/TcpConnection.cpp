@@ -22,7 +22,7 @@ void defaultConnectionCallback(const TcpConnectionPtr &conn)
 // 默认读写消息回调函数
 void defaultMessageCallback(const TcpConnectionPtr &, Buffer *buf, TimeStamp)
 {
-    LOG_TRACE << "receive" << buf->readableBytes() << " bytes: " << buf->retrieveAllAsString();
+    LOG_TRACE << "receive " << buf->readableBytes() << " bytes: " << buf->retrieveAllAsString();
 }
 
 // 检查循环是否为空
@@ -53,14 +53,14 @@ TcpConnection::TcpConnection(EventLoop *loop, const std::string &nameArg,
     channel_->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
     channel_->setErrorCallback(std::bind(&TcpConnection::handleError, this));
 
-    LOG_INFO << "TcpConnection::creator[" << name_.c_str() << "] at fd =" << sockfd;
+    LOG_INFO << "TcpConnection::creator[" << name_.c_str() << "] at fd = " << sockfd;
     socket_->setKeepAlive(true);
 }
 
 TcpConnection::~TcpConnection()
 {
-    LOG_INFO << "TcpConnection::deletor[" << name_.c_str() << "] at fd ="
-             << channel_->fd() << "state=" << static_cast<int>(state_);
+    LOG_INFO << "TcpConnection::deletor[" << name_.c_str() << "] at fd = "
+             << channel_->fd() << " state= " << static_cast<int>(state_);
 }
 
 void TcpConnection::send(const std::string &buf)

@@ -30,7 +30,7 @@ std::string InetAddress::toIp() const
     return buf;
 }
 
-//将网络字节序的ip地址和端口号转换为类似"127.0.0.1: 8080"样式
+//将网络字节序的ip地址和端口号转换为类似"127.0.0.1:8080"样式
 std::string InetAddress::toIpPort() const
 {
     char buf[64] = {0};
