@@ -5,7 +5,7 @@
 #include"TimeStamp.h"
 #include"AsyncLogging.h"
 
-extern char favcion[555];
+extern char favicon[555];
 bool benchmark = false;
 
 
@@ -41,7 +41,7 @@ void onRequest(const HttpRequest &request, HttpResponse *response)
         response->setStatusMessage("OK");
         response->setContentType("image/png");
         response->addHeader("Server", "mymuduo");
-        response->setBody(std::string(favcion, sizeof(favcion)));
+        response->setBody(std::string(favicon, sizeof(favicon)));
     }
     else if(request.path() == "/hello")
     {

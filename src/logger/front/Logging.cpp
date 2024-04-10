@@ -19,12 +19,12 @@ Logger::Logger(const char *file, int line, Logger::LogLevel level, const char *f
 
 // 字符串数组，据Level返回Level名字
 const char *getLevelName[Logger::LogLevel::LEVEL_COUNT]{
-    "TRACE", // 0
-    "DEBUG", // 1
-    "INFO",  // 2
-    "WARN",  // 3
-    "ERROR", // 4
-    "FATAL", // 5
+    "TRACE ", // 0
+    "DEBUG ", // 1
+    "INFO ",  // 2
+    "WARN ",  // 3
+    "ERROR ", // 4
+    "FATAL ", // 5
 };
 
 

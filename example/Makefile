@@ -1,5 +1,5 @@
 # 更改成自己项目的根目录
-PROJECT_PATH=/workspaces/cpp/mymuduo/mymuduo
+PROJECT_PATH=/workspaces/cpp/mymuduo
 HEADER_PATH=-I ${PROJECT_PATH}/src/base/ \
             -I ${PROJECT_PATH}/src/base/Buffer \
             -I ${PROJECT_PATH}/src/base/Thread \
