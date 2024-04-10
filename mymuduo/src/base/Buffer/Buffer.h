@@ -150,7 +150,7 @@ private:
     }
 
     // 扩容
-    void makeSpace(int len)
+    void makeSpace(size_t len)
     {
         // 当可写空间+已被读出的空闲区域 < 要写入数据的长度 扩容
         if (writableBytes() + prependableBytes() - kCheapPrepend < len)
