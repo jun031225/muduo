@@ -30,6 +30,7 @@ void HttpServer::start()
     tcpServer_.start(); 
 }
 
+//建立连接或断开连接回调函数
 void HttpServer::onConnection(const TcpConnectionPtr &conn)
 {
     if(conn->connected())
@@ -42,6 +43,7 @@ void HttpServer::onConnection(const TcpConnectionPtr &conn)
     }
 }
 
+//可读事件回调函数(解析请求+请求回调)
 void HttpServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp receiveTime)
 {
     std::unique_ptr<HttpContext> context(new HttpContext);
@@ -60,6 +62,7 @@ void HttpServer::onMessage(const TcpConnectionPtr &conn, Buffer *buf, TimeStamp 
     }
 }
 
+//请求回调函数
 void HttpServer::onRequest(const TcpConnectionPtr &conn, const HttpRequest &request)
 {
     const string &connection = request.getHeder("Connection");//获取请求中connection头部字段值

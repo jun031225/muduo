@@ -13,7 +13,7 @@ public:
     LogFile(const std::string &basename, off_t rollSize, bool threadSafe = true, int flushInterval = 3, int checkEveryN = 1024);
     ~LogFile() = default;
 
-    void append(const char *logline, int len);
+    void append(const char *logline, int len);//写入数据到文件缓冲区
     void flush();    // 刷新文件缓冲区buffer_(64KB)
     bool rollFile(); // 滚动日志，相当于创建一个新的文件，用来存储日志
 private:

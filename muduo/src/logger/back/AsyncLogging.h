@@ -13,6 +13,8 @@
 
 class AsyncLogging : noncopyable
 {
+    public:
+    
     AsyncLogging(const std::string &basename, off_t rollSize, int flushInterval = 3);
     ~AsyncLogging();
 
